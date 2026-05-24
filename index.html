@@ -341,7 +341,7 @@
                 <!-- 输入付款金额 -->
                 <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm text-left">
                     <label class="text-[10px] font-bold text-gray-400 block uppercase tracking-wider mb-1">输入付款金额 (CNY)</label>
-                    <div class="relative flex items-center border-b-2 border-gray-100 pb-1 focus-within:border-red-500 transition-colors">
+                    <div class="relative flex items-center border-b-2 border-gray-150 pb-1 focus-within:border-red-500 transition-colors">
                         <span class="text-2xl font-extrabold text-gray-850 mr-1.5">¥</span>
                         <input 
                             type="number" 
@@ -458,10 +458,10 @@
                             </div>
                             <!-- 快速预设 -->
                             <div class="grid grid-cols-4 gap-1.5 mt-3">
-                                <button onclick="setExtAmount(100)" class="quick-btn bg-gray-50 hover:bg-amber-50 text-gray-650 hover:text-amber-600 border border-gray-150 hover:border-amber-200 py-1.5 rounded-xl text-xs font-bold transition-all">¥100</button>
-                                <button onclick="setExtAmount(500)" class="quick-btn bg-gray-50 hover:bg-amber-50 text-gray-650 hover:text-amber-600 border border-gray-150 hover:border-amber-200 py-1.5 rounded-xl text-xs font-bold transition-all">¥500</button>
-                                <button onclick="setExtAmount(1000)" class="quick-btn bg-gray-50 hover:bg-amber-50 text-gray-650 hover:text-amber-600 border border-gray-150 hover:border-amber-200 py-1.5 rounded-xl text-xs font-bold transition-all">¥1000</button>
-                                <button onclick="setExtAmount(3000)" class="quick-btn bg-gray-50 hover:bg-amber-50 text-gray-650 hover:text-amber-600 border border-gray-150 hover:border-amber-200 py-1.5 rounded-xl text-xs font-bold transition-all">¥3000</button>
+                                <button onclick="setExtAmount(100)" class="quick-btn bg-gray-50 hover:bg-amber-50 text-gray-655 hover:text-amber-600 border border-gray-150 hover:border-amber-200 py-1.5 rounded-xl text-xs font-bold transition-all">¥100</button>
+                                <button onclick="setExtAmount(500)" class="quick-btn bg-gray-50 hover:bg-amber-50 text-gray-655 hover:text-amber-600 border border-gray-150 hover:border-amber-200 py-1.5 rounded-xl text-xs font-bold transition-all">¥500</button>
+                                <button onclick="setExtAmount(1000)" class="quick-btn bg-gray-50 hover:bg-amber-50 text-gray-655 hover:text-amber-600 border border-gray-150 hover:border-amber-200 py-1.5 rounded-xl text-xs font-bold transition-all">¥1000</button>
+                                <button onclick="setExtAmount(3000)" class="quick-btn bg-gray-50 hover:bg-amber-50 text-gray-655 hover:text-amber-600 border border-gray-150 hover:border-amber-200 py-1.5 rounded-xl text-xs font-bold transition-all">¥3000</button>
                             </div>
                         </div>
 
@@ -626,34 +626,59 @@
 
 
         <!-- ========================================== -->
-        <!-- [分支 2 扣款成功原生返回引导弹窗] -->
+        <!-- 【重构升级】模拟云闪付 App 内原生的支付完成成功页 (Stage 3_UP) (z-index为35) -->
         <!-- ========================================== -->
-        <div id="upReturnPromptModal" class="hidden absolute inset-0 bg-black/60 z-[75] flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl w-full max-w-xs p-5 text-center space-y-4 shadow-2xl animate-slide-up">
-                <div class="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center mx-auto text-emerald-600">
-                    <i class="fa-solid fa-circle-check text-2xl"></i>
+        <div id="upSuccessStage" class="hidden absolute inset-0 bg-[#f6f6f6] z-[35] flex flex-col font-sans">
+            <!-- 原生顶栏 -->
+            <header class="bg-white border-b border-gray-150 text-gray-800 pt-6 pb-4 px-4 flex items-center justify-center shrink-0 relative">
+                <span class="font-extrabold text-sm tracking-wide text-gray-900">支付结果</span>
+            </header>
+            
+            <!-- 支付成功主区域 -->
+            <div class="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center space-y-6 text-center">
+                <div class="w-16 h-16 bg-[#e62e2d]/10 rounded-full flex items-center justify-center text-[#e62e2d] shadow-sm">
+                    <i class="fa-solid fa-circle-check text-3xl"></i>
                 </div>
-                <div>
-                    <h4 class="font-bold text-sm text-gray-800">付款成功</h4>
-                    <p class="text-[10px] text-gray-400 mt-1 leading-relaxed">
-                        您的账单已在银联系统清算成功。
-                    </p>
+                <div class="space-y-1">
+                    <h3 class="text-lg font-black text-gray-900">云闪付交易完成</h3>
+                    <p class="text-xs text-gray-400">电子付款回执已由银联系统生成</p>
                 </div>
-                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 text-left text-[11px] space-y-1">
-                    <div class="flex justify-between"><span class="text-gray-400">实付总额：</span><span class="font-bold text-gray-800" id="promptShowAmount">¥0.00</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">收款商户：</span><span class="text-gray-850">星空国际大学收费处</span></div>
+
+                <!-- 票据面板 -->
+                <div class="w-full bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left text-xs space-y-2.5 text-gray-600">
+                    <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span class="text-gray-400">实付金额</span>
+                        <span class="text-lg font-black text-[#e62e2d]" id="upSuccessShowAmount">¥0.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">商户名称</span>
+                        <span class="font-bold text-gray-800">星空国际大学教育收费处</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">对账学号等</span>
+                        <span class="text-gray-800 font-medium" id="upSuccessShowMemo">-</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">交易状态</span>
+                        <span class="text-emerald-600 font-bold"><i class="fa-solid fa-cloud-check mr-0.5"></i> 银联记账成功</span>
+                    </div>
                 </div>
-                <!-- 点击手动触发跳回商户浏览器 -->
-                <button onclick="triggerBrowserRedirectTransition()" class="w-full bg-[#e62e2d] hover:bg-red-700 text-white text-xs font-bold py-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center space-x-1">
-                    <span>返回商户页面</span>
-                    <i class="fa-solid fa-angle-right"></i>
-                </button>
+
+                <!-- 加载提示语（暗示用户自动跳转或等候确认） -->
+                <div class="flex items-center space-x-2 text-[11px] text-gray-400 py-2">
+                    <i class="fa-solid fa-circle-notch fa-spin text-red-500"></i>
+                    <span>正在校对交易环境，准备弹出跳转确认...</span>
+                </div>
             </div>
+            
+            <footer class="p-4 bg-white border-t border-gray-100 shrink-0 text-center text-[10px] text-gray-400">
+                <i class="fa-solid fa-shield-halved mr-1 text-red-500/60"></i> 本次交易由中国银联多因子风控模型保护
+            </footer>
         </div>
 
 
         <!-- ========================================== -->
-        <!-- [分支 3]：Secure Pay 安全信用卡验证面滑出 (z-index 重构为 z-[60]) -->
+        <!-- [分支 3]：Secure Pay 安全信用卡验证面滑出 -->
         <!-- ========================================== -->
         <div id="securePayModal" class="hidden absolute inset-0 bg-black/60 z-40 flex flex-col justify-end">
             <div class="bg-white rounded-t-3xl w-full h-[85%] flex flex-col overflow-hidden relative">
@@ -830,7 +855,9 @@
             </div>
         </div>
 
+        <!-- ========================================== -->
         <!-- 底栏：桥接调试控制台 -->
+        <!-- ========================================== -->
         <div id="consolePanel" class="absolute bottom-0 left-0 right-0 bg-zinc-900 text-green-400 text-[10px] font-mono h-36 border-t border-zinc-800 z-[55] flex flex-col transition-transform duration-300 transform translate-y-28">
             <div onclick="toggleConsole()" class="bg-zinc-800 px-4 py-1.5 flex items-center justify-between cursor-pointer text-zinc-300 shrink-0">
                 <span class="flex items-center font-bold">
@@ -849,10 +876,10 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- 高仿真跳转提示对话框组件群 -->
+    <!-- 高仿真跳转提示对话框组件群 (z-index为80) -->
     <!-- ========================================== -->
     
-    <!-- 1. 扫码成功 ➔ 跳转外部浏览器之前的 iOS 系统级确认弹窗 (z-index为80) -->
+    <!-- 1. 扫码成功 ➔ 跳转外部浏览器确认弹窗 -->
     <div id="scanToBrowserPrompt" class="hidden absolute inset-0 bg-black/60 z-[80] flex items-center justify-center p-6 backdrop-blur-[2px]">
         <div class="bg-white rounded-2xl max-w-[270px] w-full text-center overflow-hidden shadow-2xl animate-slide-up">
             <div class="p-5 space-y-2">
@@ -866,7 +893,7 @@
         </div>
     </div>
 
-    <!-- 2. 外部浏览器 ➔ 唤起云闪付 App 之前的 Safari 风格确认弹窗 (z-index为80) -->
+    <!-- 2. 外部浏览器 ➔ 唤起云闪付 App 确认弹窗 -->
     <div id="browserToAppPrompt" class="hidden absolute inset-0 bg-black/60 z-[80] flex items-center justify-center p-6 backdrop-blur-[2px]">
         <div class="bg-white rounded-2xl max-w-[270px] w-full text-center overflow-hidden shadow-2xl animate-slide-up">
             <div class="p-5 space-y-1">
@@ -880,7 +907,7 @@
         </div>
     </div>
 
-    <!-- 【新增】3. 从云闪付 H5 确认扣款后，在 App 内部弹出的原生跳转提示弹窗 (z-index为80) -->
+    <!-- 3. App 扣款完成 ➔ 自动跳转回浏览器之前的询问弹窗 -->
     <div id="appToBrowserPrompt" class="hidden absolute inset-0 bg-black/60 z-[80] flex items-center justify-center p-6 backdrop-blur-[2px]">
         <div class="bg-white rounded-2xl max-w-[270px] w-full text-center overflow-hidden shadow-2xl animate-slide-up">
             <div class="p-5 space-y-2">
@@ -1073,12 +1100,10 @@
             logAction('3. 内嵌 WebView 缴费页面加载完成，等待输入。', 'info');
         }
 
-        // ==========================================
         // 分支 2 扫码确认跳转浏览器逻辑 (包含1.5秒过渡)
-        // ==========================================
         function confirmScanToBrowserJump() {
             closeModal('scanToBrowserPrompt');
-            logAction('用户允许跳转。正在启动 Safari/Chrome 浏览器...", "info');
+            logAction('用户允许跳转。正在启动 Safari/Chrome 浏览器...', 'info');
             
             const transitionScreen = getEl('systemTransitionScreen');
             const transIcon = getEl('transitionIcon');
@@ -1127,6 +1152,7 @@
             closeModal('scanToBrowserPrompt');
             closeModal('browserToAppPrompt');
             closeModal('appToBrowserPrompt');
+            
             const externalBrowserView = getEl('externalBrowserView');
             if (externalBrowserView) {
                 externalBrowserView.classList.add('hidden');
@@ -1136,12 +1162,14 @@
             const upHomeStage = getEl('upHomeStage');
             const scanStage = getEl('scanStage');
             const payMasterStage = getEl('payMasterStage');
+            const upSuccessStage = getEl('upSuccessStage');
             if (upHomeStage) upHomeStage.classList.add('-translate-x-full');
             if (scanStage) {
                 scanStage.classList.remove('-translate-x-full');
                 scanStage.classList.remove('translate-x-full');
             }
             if (payMasterStage) payMasterStage.classList.add('translate-x-full');
+            if (upSuccessStage) upSuccessStage.classList.add('hidden');
             logAction('用户退回到扫一扫相机取景状态。', 'info');
         }
 
@@ -1270,10 +1298,10 @@
         }
 
         // ==========================================
-        // 分支 2 外部浏览器点击付款时的 Safari 风格系统跳转弹窗触发
+        // 【核心交互修复】：从外部浏览器跳转到云闪付App时，先弹出 Safari 确认对话框
         // ==========================================
         function triggerExtDeeplink() {
-            logAction(`[分支 2] 浏览器触发跳转申请。提示唤起框中...`, 'info');
+            logAction(`[分支 2] 浏览器申请唤起 App。展示 Safari 风格确认对话框...`, 'info');
             openModal('browserToAppPrompt');
         }
 
@@ -1330,28 +1358,39 @@
 
             // 如果当前是分支 2 (外部浏览器跨端双向跳转)
             if (state.branch === 2) {
-                // 【核心重构】：支付完成后不弹结算，而是立刻弹出全新的“App至浏览器跳转申请”系统确认框
-                openModal('appToBrowserPrompt');
-                logAction('【云闪付App扣款完成】弹出原生确认提示：询问用户是否允许打开浏览器以返回商户网站。', 'success');
+                // 原生付款卡面板收起，原地直接展示云闪付 App 内特制的“支付完成原生页面” (upSuccessStage)
+                const upSuccessStage = getEl('upSuccessStage');
+                const upSuccessShowAmount = getEl('upSuccessShowAmount');
+                const upSuccessShowMemo = getEl('upSuccessShowMemo');
+
+                const finalAmount = Number(state.amount) || 0;
+                if (upSuccessShowAmount) upSuccessShowAmount.innerText = `¥${finalAmount.toFixed(2)}`;
+                if (upSuccessShowMemo) upSuccessShowMemo.innerText = state.memo || '未填写对账信息';
+                
+                if (upSuccessStage) upSuccessStage.classList.remove('hidden');
+                logAction('【云闪付App内】1. 付款确认成功，原地展示云闪付内置交易成功结算页。', 'success');
+
+                // 模拟用户浏览账单，等候 1.5 秒后自动弹出“是否跳转回外部浏览器”的 iOS 系统确认弹窗
+                setTimeout(() => {
+                    openModal('appToBrowserPrompt');
+                    logAction('【云闪付App内】2. 渲染校对完成，弹出原生系统确认框，引导用户返回原商户浏览器。', 'success');
+                }, 1500); // 1.5 秒后自动滑出弹窗
             } else {
                 // 分支 1 正常走普通成功逻辑
                 simulatePaymentSuccess('云闪付App-内置极速付款');
             }
         }
 
-        // 【新增】：拒绝跳转
+        // 拒绝跳转处理（如果留在 App内）
         function cancelAppToBrowserJump() {
             closeModal('appToBrowserPrompt');
-            logAction('用户选择留在云闪付 App。正在展示云闪付端交易回执。', 'info');
-            
-            // 降级：直接展示云闪付端的本地成功结算 Modal 
-            simulatePaymentSuccess('云闪付App-独立交易留档');
+            logAction('用户选择留在云闪付 App。停止跳转指令。', 'info');
         }
 
-        // 【新增】：确认跳转，正式拉起系统过渡效果并在 1.5 秒后落地到外部默认浏览器成功页面
+        // 允许跳转（确认回弹）
         function confirmAppToBrowserJump() {
             closeModal('appToBrowserPrompt');
-            logAction('用户允许跳转，正向系统注册 Browser 唤起协议...', 'info');
+            logAction('用户授权允许跳转，启动 Browser 激活网关...', 'info');
             triggerBrowserRedirectTransition();
         }
 
@@ -1368,7 +1407,7 @@
             if (transitionScreen && transIcon && transTitle && transSub) {
                 transIcon.className = "fa-solid fa-arrow-rotate-left fa-spin text-xl text-emerald-400";
                 transTitle.innerText = "正在返回商户页面...";
-                transSub.innerText = "银联已清算账单，正在返回 Safari/Chrome 浏览器展示交易结果...";
+                transSub.innerText = "中国银联已安全结算账单，正在返回 Safari/Chrome 默认浏览器...";
                 transitionScreen.classList.remove('hidden');
             }
 
@@ -1376,6 +1415,10 @@
             setTimeout(() => {
                 if (transitionScreen) transitionScreen.classList.add('hidden');
                 
+                // 彻底关闭和隐藏云闪付APP的结算主面
+                const upSuccessStage = getEl('upSuccessStage');
+                if (upSuccessStage) upSuccessStage.classList.add('hidden');
+
                 // 隐藏云闪付APP主页
                 const upHomeStage = getEl('upHomeStage');
                 if (upHomeStage) {
@@ -1423,8 +1466,8 @@
                 if (extBackTxn) extBackTxn.innerText = transactionId;
                 if (extBackTime) extBackTime.innerText = new Date().toLocaleString('zh-CN', { hour12: false });
                 
-                logAction('已重新切回默认浏览器，H5 落地成功页已直接渲染清算账单，交易完成！', 'success');
-            }, 1500); // 严格设置 1.5 秒转场跳转延迟，更具跨应用切换的拟真质感
+                logAction('已重新切回默认浏览器，H5 成功落地页已直接渲染清算账单，交易完成！', 'success');
+            }, 1500); // 1.5 秒转场跳转延迟
         }
 
 
@@ -1496,7 +1539,6 @@
             }, 1000);
         }
 
-        // 返回卡输入页
         function backToCardInput() {
             const securePay3DSView = getEl('securePay3DSView');
             const securePayCardInputView = getEl('securePayCardInputView');
@@ -1624,11 +1666,13 @@
             const upHomeStage = getEl('upHomeStage');
             const scanStage = getEl('scanStage');
             const payMasterStage = getEl('payMasterStage');
+            const upSuccessStage = getEl('upSuccessStage');
 
             if (demoConfigStage) demoConfigStage.classList.remove('-translate-y-full');
             if (upHomeStage) upHomeStage.classList.remove('-translate-x-full');
             if (scanStage) scanStage.classList.add('translate-x-full');
             if (payMasterStage) payMasterStage.classList.add('translate-x-full');
+            if (upSuccessStage) upSuccessStage.classList.add('hidden');
 
             validateForm();
             logAction('演示配置与模拟手机数据已清空。已重置返回起始页。', 'success');
